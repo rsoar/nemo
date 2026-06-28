@@ -5,6 +5,7 @@
   "main": "./out/main/index.js",
   "author": "rsoar_dev",
   "license": "MIT",
+  "homepage": "https://github.com/me-rsoar/memo",
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",

@@ -13,6 +13,8 @@ asarUnpack:
 linux:
   target:
     - AppImage
+    - deb
   category: Utility
   icon: build/icon.png
+  maintainer: rsoar_dev <rsoar_dev@outlook.com>
   artifactName: ${productName}-${version}.${ext}
