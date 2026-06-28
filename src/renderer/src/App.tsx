@@ -14,10 +14,14 @@ export default function App(): JSX.Element {
     setNotes(await window.api.notes.list())
   }, [])
 
+  const reloadCategories = useCallback(async () => {
+    setCategories(await window.api.categories.list())
+  }, [])
+
   useEffect(() => {
     refresh()
-    window.api.categories.list().then(setCategories)
-  }, [refresh])
+    reloadCategories()
+  }, [refresh, reloadCategories])
 
   return (
     <div className="flex h-full flex-col bg-panel text-foreground">
@@ -32,6 +36,7 @@ export default function App(): JSX.Element {
         <NoteEditor
           id={view.id}
           categories={categories}
+          onCategoriesChange={reloadCategories}
           onClose={async () => {
             await refresh()
             setView({ mode: 'list' })

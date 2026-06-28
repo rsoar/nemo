@@ -60,7 +60,7 @@ export default function NoteList({ notes, categories, onNew, onOpen }: Props): J
           </button>
         </div>
 
-        <div className="no-scrollbar -mx-1 mt-3 flex gap-1 overflow-x-auto px-1 pb-1">
+        <div className="mt-3 flex flex-wrap gap-1">
           <FilterPill label="Todas" active={filter === 'all'} onClick={() => setFilter('all')} />
           {categories.map((c) => (
             <FilterPill

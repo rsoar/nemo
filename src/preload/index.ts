@@ -12,7 +12,10 @@ const api: MemoApi = {
     remove: (id) => ipcRenderer.invoke('notes:remove', id)
   },
   categories: {
-    list: () => ipcRenderer.invoke('categories:list')
+    list: () => ipcRenderer.invoke('categories:list'),
+    create: (name: string, color: string | null) =>
+      ipcRenderer.invoke('categories:create', name, color),
+    remove: (id: number) => ipcRenderer.invoke('categories:remove', id)
   },
   window: {
     minimize: () => ipcRenderer.send('window:minimize'),

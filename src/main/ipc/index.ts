@@ -20,6 +20,10 @@ export function registerIpcHandlers(windows: WindowManager): void {
 
   // Categories
   ipcMain.handle('categories:list', () => categoryRepository.list())
+  ipcMain.handle('categories:create', (_e, name: string, color: string | null) =>
+    categoryRepository.create(name, color)
+  )
+  ipcMain.handle('categories:remove', (_e, id: number) => categoryRepository.remove(id))
 
   // Window controls
   ipcMain.on('window:minimize', () => windows.minimizeToBubble())

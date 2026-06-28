@@ -45,9 +45,11 @@ export interface NotesApi {
   remove: (id: number) => Promise<void>
 }
 
-/** Category read surface exposed to the renderer. */
+/** Category surface exposed to the renderer. */
 export interface CategoriesApi {
   list: () => Promise<Category[]>
+  create: (name: string, color: string | null) => Promise<Category>
+  remove: (id: number) => Promise<void>
 }
 
 /** Frameless window controls driven from the renderer titlebar / bubble. */
