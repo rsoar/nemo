@@ -165,6 +165,14 @@ code {
   color: #ff6b5e;
 }
 
+.savestatus {
+  font-size: 12px;
+  color: var(--fg-dim);
+  margin-right: 4px;
+  min-width: 56px;
+  text-align: right;
+}
+
 /* --- Note list --- */
 .empty {
   color: var(--fg-dim);
