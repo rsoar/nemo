@@ -1,0 +1,43 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background: transparent;
+}
+
+.bubble-body {
+  overflow: hidden;
+}
+
+#root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bubble {
+  /* Clickable (no drag region) — primary action is "open panel".
+     Dragging the bubble to reposition it is a planned refinement. */
+  width: 56px;
+  height: 56px;
+  border: none;
+  border-radius: 50%;
+  background: #6d8bff;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.bubble:hover {
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.bubble:active {
+  transform: scale(0.97);
+}

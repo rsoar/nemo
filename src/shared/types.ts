@@ -26,8 +26,19 @@ export interface Note {
   updatedAt: string
 }
 
+/** Frameless window controls driven from the renderer titlebar / bubble. */
+export interface WindowControls {
+  /** Hide the panel and reveal the floating bubble. */
+  minimize: () => void
+  /** Hide everything to the tray (app keeps running). */
+  close: () => void
+  /** Reopen the panel (used by the bubble). */
+  showPanel: () => void
+}
+
 /** The typed surface exposed to the renderer via contextBridge as `window.api`. */
 export interface MemoApi {
   /** Phase 0 smoke-test channel; replaced by real note CRUD in Phase 2. */
   ping: () => Promise<string>
+  window: WindowControls
 }
