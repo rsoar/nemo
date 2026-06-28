@@ -1,6 +1,6 @@
 {
   "name": "memo",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Desktop note-taking app with tags, categories, markdown and a floating-bubble UI",
   "main": "./out/main/index.js",
   "author": "rsoar_dev",
@@ -12,33 +12,36 @@
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
-    "rebuild": "electron-rebuild -f -w better-sqlite3"
+    "rebuild": "electron-rebuild -f -w better-sqlite3",
+    "pack": "electron-vite build && electron-builder --dir",
+    "dist": "electron-vite build && electron-builder"
   },
   "dependencies": {
+    "better-sqlite3": "^11.10.0"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^3.7.2",
     "@fontsource/inter": "^5.2.8",
     "@tiptap/extension-link": "^2.27.2",
     "@tiptap/extension-placeholder": "^2.27.2",
     "@tiptap/pm": "^2.27.2",
     "@tiptap/react": "^2.27.2",
     "@tiptap/starter-kit": "^2.27.2",
-    "better-sqlite3": "^11.10.0",
-    "clsx": "^2.1.1",
-    "lucide-react": "^1.21.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "tiptap-markdown": "^0.8.10"
-  },
-  "devDependencies": {
-    "@electron/rebuild": "^3.7.2",
     "@types/better-sqlite3": "^7.6.13",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.5.2",
+    "clsx": "^2.1.1",
     "electron": "^31.7.6",
+    "electron-builder": "^24.13.3",
     "electron-vite": "^2.3.0",
+    "lucide-react": "^1.21.0",
     "postcss": "^8.5.15",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "tailwindcss": "^3.4.19",
+    "tiptap-markdown": "^0.8.10",
     "typescript": "^5.6.3",
     "vite": "^5.4.11"
   }
