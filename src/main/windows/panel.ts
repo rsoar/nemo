@@ -14,6 +14,23 @@ function loadRenderer(win: BrowserWindow): void {
 }
 
 /**
+ * Pins the panel to the right edge of whichever display it sits on, with its
+ * top at the work-area top and height limited to the work area. Applied AFTER
+ * the window is shown because many Linux WMs ignore constructor bounds and
+ * vertically re-center frameless windows (which pushed the header off-screen).
+ */
+function positionPanel(win: BrowserWindow): void {
+  const { workArea } = screen.getDisplayMatching(win.getBounds())
+  const width = Math.min(win.getBounds().width || PANEL_WIDTH, workArea.width)
+  win.setBounds({
+    x: workArea.x + workArea.width - width,
+    y: workArea.y,
+    width,
+    height: workArea.height
+  })
+}
+
+/**
  * Creates the main side-panel window: frameless, always-on-top, draggable and
  * width-resizable, initially anchored to the right edge of the primary display.
  * (Edge-snapping while dragging is a planned refinement.)
@@ -40,7 +57,10 @@ export function createPanelWindow(): BrowserWindow {
     }
   })
 
-  win.on('ready-to-show', () => win.show())
+  win.on('ready-to-show', () => {
+    positionPanel(win)
+    win.show()
+  })
 
   win.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url)
