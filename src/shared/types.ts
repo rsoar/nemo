@@ -32,6 +32,8 @@ export interface NoteInput {
   bodyJson?: string | null
   bodyMd?: string | null
   categoryId?: number | null
+  /** Tag names; the repository upserts them and (re)links the note. Omit to leave unchanged. */
+  tags?: string[]
 }
 
 /** Note CRUD surface exposed to the renderer. */
@@ -41,6 +43,11 @@ export interface NotesApi {
   create: (input: NoteInput) => Promise<Note>
   update: (id: number, input: NoteInput) => Promise<Note>
   remove: (id: number) => Promise<void>
+}
+
+/** Category read surface exposed to the renderer. */
+export interface CategoriesApi {
+  list: () => Promise<Category[]>
 }
 
 /** Frameless window controls driven from the renderer titlebar / bubble. */
@@ -56,5 +63,6 @@ export interface WindowControls {
 /** The typed surface exposed to the renderer via contextBridge as `window.api`. */
 export interface MemoApi {
   notes: NotesApi
+  categories: CategoriesApi
   window: WindowControls
 }

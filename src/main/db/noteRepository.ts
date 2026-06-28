@@ -35,6 +35,22 @@ function mapNote(row: NoteRow): Note {
   }
 }
 
+/** Replaces a note's tags: upserts each name, then re-links note_tags. */
+function setNoteTags(noteId: number, names: string[]): void {
+  const db = getDb()
+  db.prepare('DELETE FROM note_tags WHERE note_id = ?').run(noteId)
+  const upsert = db.prepare('INSERT OR IGNORE INTO tags (name) VALUES (?)')
+  const findId = db.prepare('SELECT id FROM tags WHERE name = ?')
+  const link = db.prepare('INSERT OR IGNORE INTO note_tags (note_id, tag_id) VALUES (?, ?)')
+  for (const raw of names) {
+    const name = raw.trim()
+    if (!name) continue
+    upsert.run(name)
+    const { id: tagId } = findId.get(name) as { id: number }
+    link.run(noteId, tagId)
+  }
+}
+
 function get(id: number): Note | null {
   const row = getDb().prepare('SELECT * FROM notes WHERE id = ?').get(id) as
     | NoteRow
@@ -50,26 +66,33 @@ function list(): Note[] {
 }
 
 function create(input: NoteInput): Note {
+  const db = getDb()
   const now = new Date().toISOString()
-  const info = getDb()
-    .prepare(
-      `INSERT INTO notes (title, body_json, body_md, category_id, created_at, updated_at)
-       VALUES (@title, @bodyJson, @bodyMd, @categoryId, @createdAt, @updatedAt)`
-    )
-    .run({
-      title: input.title ?? '',
-      bodyJson: input.bodyJson ?? null,
-      bodyMd: input.bodyMd ?? null,
-      categoryId: input.categoryId ?? null,
-      createdAt: now,
-      updatedAt: now
-    })
-  return get(Number(info.lastInsertRowid))!
+  const id = db.transaction(() => {
+    const info = db
+      .prepare(
+        `INSERT INTO notes (title, body_json, body_md, category_id, created_at, updated_at)
+         VALUES (@title, @bodyJson, @bodyMd, @categoryId, @createdAt, @updatedAt)`
+      )
+      .run({
+        title: input.title ?? '',
+        bodyJson: input.bodyJson ?? null,
+        bodyMd: input.bodyMd ?? null,
+        categoryId: input.categoryId ?? null,
+        createdAt: now,
+        updatedAt: now
+      })
+    const newId = Number(info.lastInsertRowid)
+    if (input.tags) setNoteTags(newId, input.tags)
+    return newId
+  })()
+  return get(id)!
 }
 
 function update(id: number, input: NoteInput): Note {
-  getDb()
-    .prepare(
+  const db = getDb()
+  db.transaction(() => {
+    db.prepare(
       `UPDATE notes
           SET title = @title,
               body_json = @bodyJson,
@@ -77,8 +100,7 @@ function update(id: number, input: NoteInput): Note {
               category_id = @categoryId,
               updated_at = @updatedAt
         WHERE id = @id`
-    )
-    .run({
+    ).run({
       id,
       title: input.title ?? '',
       bodyJson: input.bodyJson ?? null,
@@ -86,6 +108,8 @@ function update(id: number, input: NoteInput): Note {
       categoryId: input.categoryId ?? null,
       updatedAt: new Date().toISOString()
     })
+    if (input.tags) setNoteTags(id, input.tags)
+  })()
   return get(id)!
 }
 

@@ -1,33 +1,40 @@
 import { useMemo, useState } from 'react'
 import { Search, Plus, Filter, List as ListIcon } from 'lucide-react'
-import type { Note } from '@shared/types'
+import type { Category, Note } from '@shared/types'
 import clsx from 'clsx'
 import Titlebar from './Titlebar'
-import { CATEGORIES } from '../lib/categories'
 import { formatWhen } from '../lib/format'
 
 interface Props {
   notes: Note[]
+  categories: Category[]
   onNew: () => void
   onOpen: (id: number) => void
 }
 
-export default function NoteList({ notes, onNew, onOpen }: Props): JSX.Element {
+export default function NoteList({ notes, categories, onNew, onOpen }: Props): JSX.Element {
   const [query, setQuery] = useState('')
-  // Filter pills are visual-only for now; category filtering lands in Phase 4.
-  const [filter, setFilter] = useState<string>('all')
+  const [filter, setFilter] = useState<number | 'all'>('all')
+
+  const byId = useMemo(
+    () => new Map(categories.map((c) => [c.id, c])),
+    [categories]
+  )
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return notes
-    return notes.filter(
-      (n) =>
+    return notes.filter((n) => {
+      if (filter !== 'all' && n.categoryId !== filter) return false
+      if (!q) return true
+      return (
         n.title.toLowerCase().includes(q) ||
-        (n.bodyMd ?? '').toLowerCase().includes(q)
-    )
-  }, [notes, query])
+        (n.bodyMd ?? '').toLowerCase().includes(q) ||
+        n.tags.some((t) => t.name.toLowerCase().includes(q))
+      )
+    })
+  }, [notes, filter, query])
 
-  const isFiltered = query.trim().length > 0
+  const isFiltered = filter !== 'all' || query.trim().length > 0
 
   return (
     <>
@@ -55,20 +62,23 @@ export default function NoteList({ notes, onNew, onOpen }: Props): JSX.Element {
 
         <div className="no-scrollbar -mx-1 mt-3 flex gap-1 overflow-x-auto px-1 pb-1">
           <FilterPill label="Todas" active={filter === 'all'} onClick={() => setFilter('all')} />
-          {CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <FilterPill
-              key={c.key}
-              label={c.label}
-              color={c.colorVar}
-              active={filter === c.key}
-              onClick={() => setFilter(c.key)}
+              key={c.id}
+              label={c.name}
+              color={c.color}
+              active={filter === c.id}
+              onClick={() => setFilter(c.id)}
             />
           ))}
         </div>
 
         {isFiltered && (
           <button
-            onClick={() => setQuery('')}
+            onClick={() => {
+              setFilter('all')
+              setQuery('')
+            }}
             className="mt-2 inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground"
           >
             <Filter className="size-3" /> Limpar · {filtered.length}/{notes.length}
@@ -83,7 +93,11 @@ export default function NoteList({ notes, onNew, onOpen }: Props): JSX.Element {
           <ul className="divide-y divide-border">
             {filtered.map((note) => (
               <li key={note.id}>
-                <NoteRow note={note} onClick={() => onOpen(note.id)} />
+                <NoteRow
+                  note={note}
+                  category={note.categoryId !== null ? byId.get(note.categoryId) : undefined}
+                  onClick={() => onOpen(note.id)}
+                />
               </li>
             ))}
           </ul>
@@ -101,7 +115,7 @@ function FilterPill({
 }: {
   label: string
   active: boolean
-  color?: string
+  color?: string | null
   onClick: () => void
 }): JSX.Element {
   return (
@@ -120,7 +134,15 @@ function FilterPill({
   )
 }
 
-function NoteRow({ note, onClick }: { note: Note; onClick: () => void }): JSX.Element {
+function NoteRow({
+  note,
+  category,
+  onClick
+}: {
+  note: Note
+  category?: Category
+  onClick: () => void
+}): JSX.Element {
   return (
     <button
       onClick={onClick}
@@ -139,13 +161,28 @@ function NoteRow({ note, onClick }: { note: Note; onClick: () => void }): JSX.El
           {note.bodyMd}
         </p>
       )}
-      {note.tags.length > 0 && (
-        <div className="mt-2.5 flex min-w-0 gap-1 text-[10px] text-muted-foreground">
-          {note.tags.map((t) => (
-            <span key={t.id} className="truncate">
-              #{t.name}
-            </span>
-          ))}
+      {(category || note.tags.length > 0) && (
+        <div className="mt-2.5 flex items-center gap-3">
+          {category && (
+            <div className="flex items-center gap-1.5">
+              <span
+                className="size-1.5 rounded-full"
+                style={{ backgroundColor: category.color ?? 'var(--muted-foreground)' }}
+              />
+              <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                {category.name}
+              </span>
+            </div>
+          )}
+          {note.tags.length > 0 && (
+            <div className="flex min-w-0 gap-1 text-[10px] text-muted-foreground">
+              {note.tags.map((t) => (
+                <span key={t.id} className="truncate">
+                  #{t.name}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </button>
@@ -167,7 +204,7 @@ function EmptyState({ search }: { search: boolean }): JSX.Element {
       </h3>
       <p className="mt-1.5 max-w-[220px] text-[12px] leading-relaxed text-muted-foreground">
         {search
-          ? 'Tente outra palavra ou limpe a busca.'
+          ? 'Tente outra palavra ou limpe o filtro.'
           : 'Toque no + acima para criar sua primeira nota. Ela fica aqui, na borda da sua tela.'}
       </p>
     </div>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { Note } from '@shared/types'
+import type { Category, Note } from '@shared/types'
 import NoteList from './components/NoteList'
 import NoteEditor from './components/NoteEditor'
 
@@ -7,6 +7,7 @@ type View = { mode: 'list' } | { mode: 'editor'; id: number | null }
 
 export default function App(): JSX.Element {
   const [notes, setNotes] = useState<Note[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [view, setView] = useState<View>({ mode: 'list' })
 
   const refresh = useCallback(async () => {
@@ -15,6 +16,7 @@ export default function App(): JSX.Element {
 
   useEffect(() => {
     refresh()
+    window.api.categories.list().then(setCategories)
   }, [refresh])
 
   return (
@@ -22,12 +24,14 @@ export default function App(): JSX.Element {
       {view.mode === 'list' ? (
         <NoteList
           notes={notes}
+          categories={categories}
           onNew={() => setView({ mode: 'editor', id: null })}
           onOpen={(id) => setView({ mode: 'editor', id })}
         />
       ) : (
         <NoteEditor
           id={view.id}
+          categories={categories}
           onClose={async () => {
             await refresh()
             setView({ mode: 'list' })

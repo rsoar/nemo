@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron'
 import type { WindowManager } from '../windows/manager'
 import { noteRepository } from '../db/noteRepository'
+import { categoryRepository } from '../db/categoryRepository'
 import type { NoteInput } from '../../shared/types'
 
 /**
@@ -16,6 +17,9 @@ export function registerIpcHandlers(windows: WindowManager): void {
     noteRepository.update(id, input)
   )
   ipcMain.handle('notes:remove', (_e, id: number) => noteRepository.remove(id))
+
+  // Categories
+  ipcMain.handle('categories:list', () => categoryRepository.list())
 
   // Window controls
   ipcMain.on('window:minimize', () => windows.minimizeToBubble())

@@ -11,6 +11,9 @@ const api: MemoApi = {
     update: (id, input: NoteInput) => ipcRenderer.invoke('notes:update', id, input),
     remove: (id) => ipcRenderer.invoke('notes:remove', id)
   },
+  categories: {
+    list: () => ipcRenderer.invoke('categories:list')
+  },
   window: {
     minimize: () => ipcRenderer.send('window:minimize'),
     close: () => ipcRenderer.send('window:close'),
