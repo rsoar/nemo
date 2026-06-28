@@ -1,0 +1,78 @@
+:root {
+  --bg: #1e1e22;
+  --bg-elev: #27272e;
+  --fg: #e6e6ea;
+  --fg-dim: #9a9aa5;
+  --accent: #6d8bff;
+  --border: #34343d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  overflow: hidden;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Frameless windows have no OS titlebar — this strip is the drag handle. */
+.titlebar {
+  -webkit-app-region: drag;
+  display: flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 14px;
+  background: var(--bg-elev);
+  border-bottom: 1px solid var(--border);
+  user-select: none;
+}
+
+.titlebar__brand {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+}
+
+.panel {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.panel h1 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.panel__hint {
+  color: var(--fg-dim);
+  font-size: 13px;
+}
+
+.panel__status {
+  margin-top: 24px;
+  font-size: 13px;
+}
+
+code {
+  background: var(--bg-elev);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
