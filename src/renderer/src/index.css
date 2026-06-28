@@ -1,269 +1,78 @@
-:root {
-  --bg: #1e1e22;
-  --bg-elev: #27272e;
-  --fg: #e6e6ea;
-  --fg-dim: #9a9aa5;
-  --accent: #6d8bff;
-  --border: #34343d;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.625rem;
+
+    /* Surfaces — zinc-tinted near-blacks */
+    --background: oklch(0.16 0.005 270);
+    --panel: oklch(0.2 0.005 270);
+    --panel-elev: oklch(0.23 0.006 270);
+    --titlebar: oklch(0.22 0.005 270);
+    --subtle: oklch(0.26 0.006 270);
+
+    /* Text */
+    --foreground: oklch(0.97 0.005 270);
+    --muted: oklch(0.28 0.006 270);
+    --muted-foreground: oklch(0.62 0.01 270);
+
+    /* Strokes */
+    --border: oklch(1 0 0 / 8%);
+    --border-strong: oklch(1 0 0 / 14%);
+    --input: oklch(0.14 0.005 270);
+    --ring: oklch(0.72 0.16 268);
+
+    /* Accent — periwinkle #6d8bff */
+    --accent: oklch(0.72 0.16 268);
+    --accent-foreground: oklch(0.16 0.005 270);
+    --accent-soft: oklch(0.72 0.16 268 / 12%);
+
+    --danger: oklch(0.7 0.19 25);
+
+    /* Category color tokens (used by filter pills; wired in Phase 4) */
+    --cat-work: oklch(0.75 0.14 245);
+    --cat-personal: oklch(0.8 0.15 75);
+    --cat-study: oklch(0.78 0.16 155);
+    --cat-ideas: oklch(0.72 0.18 15);
+    --cat-product: oklch(0.74 0.16 295);
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
 }
 
-* {
-  box-sizing: border-box;
-}
+@layer utilities {
+  /* Frameless window drag regions */
+  .drag {
+    -webkit-app-region: drag;
+  }
+  .no-drag {
+    -webkit-app-region: no-drag;
+  }
 
-html,
-body,
-#root {
-  height: 100%;
-  margin: 0;
-}
-
-body {
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--fg);
-  overflow: hidden;
-}
-
-.app {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-/* Frameless windows have no OS titlebar — this strip is the drag handle. */
-.titlebar {
-  -webkit-app-region: drag;
-  display: flex;
-  align-items: center;
-  height: 38px;
-  padding: 0 14px;
-  background: var(--bg-elev);
-  border-bottom: 1px solid var(--border);
-  user-select: none;
-}
-
-.titlebar__brand {
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  color: var(--accent);
-}
-
-/* Buttons must opt out of the drag region to stay clickable. */
-.titlebar__controls {
-  -webkit-app-region: no-drag;
-  margin-left: auto;
-  display: flex;
-  gap: 2px;
-}
-
-.winbtn {
-  width: 30px;
-  height: 26px;
-  border: none;
-  background: transparent;
-  color: var(--fg-dim);
-  font-size: 13px;
-  border-radius: 5px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.winbtn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--fg);
-}
-
-.winbtn--close:hover {
-  background: #c0392b;
-  color: #fff;
-}
-
-.panel {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.panel h1 {
-  margin: 0 0 8px;
-  font-size: 20px;
-}
-
-.panel__hint {
-  color: var(--fg-dim);
-  font-size: 13px;
-}
-
-.panel__status {
-  margin-top: 24px;
-  font-size: 13px;
-}
-
-code {
-  background: var(--bg-elev);
-  padding: 2px 6px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-}
-
-/* --- Action bar (search / buttons) --- */
-.actionbar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.actionbar__spacer {
-  flex: 1;
-}
-
-.search {
-  flex: 1;
-  min-width: 0;
-  background: var(--bg-elev);
-  border: 1px solid var(--border);
-  color: var(--fg);
-  padding: 7px 10px;
-  border-radius: 6px;
-  font-size: 13px;
-}
-
-.search:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-.btn {
-  background: var(--bg-elev);
-  border: 1px solid var(--border);
-  color: var(--fg);
-  padding: 7px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.btn:hover {
-  border-color: var(--accent);
-}
-
-.btn--primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-  font-weight: 600;
-}
-
-.btn--danger:hover {
-  border-color: #c0392b;
-  color: #ff6b5e;
-}
-
-.savestatus {
-  font-size: 12px;
-  color: var(--fg-dim);
-  margin-right: 4px;
-  min-width: 56px;
-  text-align: right;
-}
-
-/* --- Note list --- */
-.empty {
-  color: var(--fg-dim);
-  font-size: 13px;
-  text-align: center;
-  margin-top: 32px;
-  line-height: 1.5;
-}
-
-.notelist {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.noteitem {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  width: 100%;
-  text-align: left;
-  background: var(--bg-elev);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 12px;
-  cursor: pointer;
-  color: var(--fg);
-}
-
-.noteitem:hover {
-  border-color: var(--accent);
-}
-
-.noteitem__title {
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.noteitem__preview {
-  font-size: 12px;
-  color: var(--fg-dim);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.noteitem__when {
-  font-size: 11px;
-  color: var(--fg-dim);
-}
-
-/* --- Editor --- */
-.editor {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.editor__title {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--border);
-  color: var(--fg);
-  font-size: 18px;
-  font-weight: 600;
-  padding: 4px 2px 8px;
-}
-
-.editor__title:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-.editor__body {
-  flex: 1;
-  resize: none;
-  background: var(--bg-elev);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--fg);
-  font-family: inherit;
-  font-size: 14px;
-  line-height: 1.5;
-  padding: 10px 12px;
-  min-height: 200px;
-}
-
-.editor__body:focus {
-  outline: none;
-  border-color: var(--accent);
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

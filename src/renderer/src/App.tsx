@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { Note } from '@shared/types'
-import Titlebar from './components/Titlebar'
 import NoteList from './components/NoteList'
 import NoteEditor from './components/NoteEditor'
 
@@ -19,8 +18,7 @@ export default function App(): JSX.Element {
   }, [refresh])
 
   return (
-    <div className="app">
-      <Titlebar />
+    <div className="flex h-full flex-col bg-panel text-foreground">
       {view.mode === 'list' ? (
         <NoteList
           notes={notes}

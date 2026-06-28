@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
+import { Trash2, Check } from 'lucide-react'
+import Titlebar from './Titlebar'
 
 interface Props {
   /** Note id to edit, or null to create a new note. */
@@ -17,8 +19,6 @@ export default function NoteEditor({ id, onClose }: Props): JSX.Element {
   const [loading, setLoading] = useState(id !== null)
   const [status, setStatus] = useState<SaveStatus>('')
 
-  // Last persisted snapshot (to detect "dirty") and the latest edited values
-  // (so debounced/flush saves always use current content).
   const saved = useRef({ title: '', body: '' })
   const latest = useRef({ title: '', body: '', noteId: id })
   latest.current = { title, body, noteId }
@@ -81,7 +81,7 @@ export default function NoteEditor({ id, onClose }: Props): JSX.Element {
 
   async function handleBack(): Promise<void> {
     if (timer.current) clearTimeout(timer.current)
-    await persist() // flush any pending edit before leaving
+    await persist()
     onClose()
   }
 
@@ -94,45 +94,76 @@ export default function NoteEditor({ id, onClose }: Props): JSX.Element {
 
   if (loading) {
     return (
-      <main className="panel">
-        <p className="empty">Carregando…</p>
-      </main>
+      <>
+        <Titlebar showBack onBack={onClose} />
+        <div className="flex flex-1 items-center justify-center text-[13px] text-muted-foreground">
+          Carregando…
+        </div>
+      </>
     )
   }
 
   return (
     <>
-      <div className="actionbar">
-        <button className="btn" onClick={handleBack} title="Voltar">
-          ← Voltar
-        </button>
-        <div className="actionbar__spacer" />
-        <span className="savestatus">
-          {status === 'saving' ? 'Salvando…' : status === 'saved' ? 'Salvo' : ''}
-        </span>
-        <button
-          className="btn btn--danger"
-          onClick={handleDelete}
-          title="Excluir nota"
-        >
-          Excluir
-        </button>
+      <Titlebar showBack onBack={handleBack} />
+
+      {/* Actions row */}
+      <div className="flex items-center justify-between border-b border-border bg-titlebar px-4 py-1.5">
+        <div className="flex items-center gap-2 text-[10px] font-medium text-muted-foreground">
+          <span
+            className={
+              status === 'saving'
+                ? 'inline-flex size-1.5 rounded-full bg-muted-foreground'
+                : 'inline-flex size-1.5 rounded-full bg-emerald-400'
+            }
+          />
+          {status === 'saving' ? 'Salvando…' : 'Salvo'}
+        </div>
+        <div className="flex items-center gap-1">
+          <button
+            aria-label="Excluir nota"
+            onClick={handleDelete}
+            className="flex size-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-white/5 hover:text-danger"
+          >
+            <Trash2 className="size-3.5" />
+          </button>
+          <button
+            aria-label="Concluir"
+            onClick={handleBack}
+            className="flex size-7 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+          >
+            <Check className="size-4" strokeWidth={2.4} />
+          </button>
+        </div>
       </div>
 
-      <main className="panel editor">
+      {/* Meta header */}
+      <div className="border-b border-border bg-panel-elev px-5 py-4">
         <input
-          className="editor__title"
-          placeholder="Título"
           value={title}
           onChange={(e) => edit({ title: e.target.value })}
+          placeholder="Nota sem título"
+          className="w-full bg-transparent text-[17px] font-semibold leading-tight text-foreground placeholder:text-muted-foreground focus:outline-none"
         />
-        <textarea
-          className="editor__body"
-          placeholder="Escreva sua anotação… (editor rico chega na Fase 3)"
-          value={body}
-          onChange={(e) => edit({ body: e.target.value })}
-        />
-      </main>
+        {/* Category + tags chips are visual placeholders; wired in Phase 4. */}
+        <div className="mt-3 flex flex-wrap items-center gap-1.5">
+          <button
+            disabled
+            title="Em breve (Fase 4)"
+            className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-full bg-subtle px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground ring-1 ring-border"
+          >
+            + Categoria
+          </button>
+        </div>
+      </div>
+
+      {/* Body — plain editor for now; rich text (TipTap) + toolbar arrive in Phase 3. */}
+      <textarea
+        value={body}
+        onChange={(e) => edit({ body: e.target.value })}
+        placeholder="Escreva sua anotação…"
+        className="flex-1 resize-none bg-panel px-6 py-5 text-[14px] leading-relaxed text-foreground placeholder:text-muted-foreground focus:outline-none"
+      />
     </>
   )
 }

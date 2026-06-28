@@ -1,5 +1,9 @@
 import { useMemo, useState } from 'react'
+import { Search, Plus, Filter, List as ListIcon } from 'lucide-react'
 import type { Note } from '@shared/types'
+import clsx from 'clsx'
+import Titlebar from './Titlebar'
+import { CATEGORIES } from '../lib/categories'
 import { formatWhen } from '../lib/format'
 
 interface Props {
@@ -10,6 +14,8 @@ interface Props {
 
 export default function NoteList({ notes, onNew, onOpen }: Props): JSX.Element {
   const [query, setQuery] = useState('')
+  // Filter pills are visual-only for now; category filtering lands in Phase 4.
+  const [filter, setFilter] = useState<string>('all')
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -21,46 +27,149 @@ export default function NoteList({ notes, onNew, onOpen }: Props): JSX.Element {
     )
   }, [notes, query])
 
+  const isFiltered = query.trim().length > 0
+
   return (
     <>
-      <div className="actionbar">
-        <input
-          className="search"
-          type="search"
-          placeholder="Buscar…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <button className="btn btn--primary" onClick={onNew}>
-          + Nova
-        </button>
+      <Titlebar />
+
+      <div className="px-4 pb-3 pt-4">
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute left-3 top-2.5 size-4 text-muted-foreground" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar notas…"
+              className="h-9 w-full rounded-md bg-input pl-9 pr-3 text-sm text-foreground ring-1 ring-border transition-shadow placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+          </div>
+          <button
+            onClick={onNew}
+            aria-label="Nova nota"
+            className="flex size-9 shrink-0 items-center justify-center rounded-md bg-accent text-accent-foreground transition-opacity hover:opacity-90"
+          >
+            <Plus className="size-4" strokeWidth={2.6} />
+          </button>
+        </div>
+
+        <div className="no-scrollbar -mx-1 mt-3 flex gap-1 overflow-x-auto px-1 pb-1">
+          <FilterPill label="Todas" active={filter === 'all'} onClick={() => setFilter('all')} />
+          {CATEGORIES.map((c) => (
+            <FilterPill
+              key={c.key}
+              label={c.label}
+              color={c.colorVar}
+              active={filter === c.key}
+              onClick={() => setFilter(c.key)}
+            />
+          ))}
+        </div>
+
+        {isFiltered && (
+          <button
+            onClick={() => setQuery('')}
+            className="mt-2 inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground hover:text-foreground"
+          >
+            <Filter className="size-3" /> Limpar · {filtered.length}/{notes.length}
+          </button>
+        )}
       </div>
 
-      <main className="panel">
+      <div className="flex-1 overflow-y-auto border-t border-border">
         {filtered.length === 0 ? (
-          <p className="empty">
-            {notes.length === 0
-              ? 'Nenhuma anotação ainda. Crie a primeira em "+ Nova".'
-              : 'Nada encontrado para a busca.'}
-          </p>
+          <EmptyState search={isFiltered} />
         ) : (
-          <ul className="notelist">
+          <ul className="divide-y divide-border">
             {filtered.map((note) => (
               <li key={note.id}>
-                <button className="noteitem" onClick={() => onOpen(note.id)}>
-                  <span className="noteitem__title">
-                    {note.title || '(sem título)'}
-                  </span>
-                  {note.bodyMd && (
-                    <span className="noteitem__preview">{note.bodyMd}</span>
-                  )}
-                  <span className="noteitem__when">{formatWhen(note.updatedAt)}</span>
-                </button>
+                <NoteRow note={note} onClick={() => onOpen(note.id)} />
               </li>
             ))}
           </ul>
         )}
-      </main>
+      </div>
     </>
+  )
+}
+
+function FilterPill({
+  label,
+  active,
+  color,
+  onClick
+}: {
+  label: string
+  active: boolean
+  color?: string
+  onClick: () => void
+}): JSX.Element {
+  return (
+    <button
+      onClick={onClick}
+      className={clsx(
+        'flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-medium transition-colors',
+        active ? 'bg-subtle text-foreground' : 'text-muted-foreground hover:text-foreground'
+      )}
+    >
+      {color && (
+        <span className="size-1.5 rounded-full" style={{ backgroundColor: color }} />
+      )}
+      {label}
+    </button>
+  )
+}
+
+function NoteRow({ note, onClick }: { note: Note; onClick: () => void }): JSX.Element {
+  return (
+    <button
+      onClick={onClick}
+      className="group block w-full px-4 py-3.5 text-left transition-colors hover:bg-white/[0.03]"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <span className="truncate text-sm font-medium text-foreground">
+          {note.title || '(sem título)'}
+        </span>
+        <span className="shrink-0 text-[10px] text-muted-foreground">
+          {formatWhen(note.updatedAt)}
+        </span>
+      </div>
+      {note.bodyMd && (
+        <p className="mt-1 line-clamp-2 text-[13px] leading-relaxed text-muted-foreground">
+          {note.bodyMd}
+        </p>
+      )}
+      {note.tags.length > 0 && (
+        <div className="mt-2.5 flex min-w-0 gap-1 text-[10px] text-muted-foreground">
+          {note.tags.map((t) => (
+            <span key={t.id} className="truncate">
+              #{t.name}
+            </span>
+          ))}
+        </div>
+      )}
+    </button>
+  )
+}
+
+function EmptyState({ search }: { search: boolean }): JSX.Element {
+  return (
+    <div className="flex h-full flex-col items-center justify-center px-8 py-16 text-center">
+      <div className="grid size-12 place-items-center rounded-full bg-subtle ring-1 ring-border">
+        {search ? (
+          <Search className="size-5 text-muted-foreground" />
+        ) : (
+          <ListIcon className="size-5 text-muted-foreground" />
+        )}
+      </div>
+      <h3 className="mt-4 text-sm font-medium text-foreground">
+        {search ? 'Nada encontrado' : 'Nenhuma nota ainda'}
+      </h3>
+      <p className="mt-1.5 max-w-[220px] text-[12px] leading-relaxed text-muted-foreground">
+        {search
+          ? 'Tente outra palavra ou limpe a busca.'
+          : 'Toque no + acima para criar sua primeira nota. Ela fica aqui, na borda da sua tela.'}
+      </p>
+    </div>
   )
 }
