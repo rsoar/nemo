@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Trash2, Check } from 'lucide-react'
 import Titlebar from './Titlebar'
+import RichEditor, { type BodyValue } from './RichEditor'
 
 interface Props {
   /** Note id to edit, or null to create a new note. */
@@ -13,33 +14,38 @@ type SaveStatus = '' | 'saving' | 'saved'
 const AUTOSAVE_DELAY = 600
 
 export default function NoteEditor({ id, onClose }: Props): JSX.Element {
-  const [noteId, setNoteId] = useState<number | null>(id)
   const [title, setTitle] = useState('')
-  const [body, setBody] = useState('')
   const [loading, setLoading] = useState(id !== null)
   const [status, setStatus] = useState<SaveStatus>('')
+  const [initial, setInitial] = useState<{ json: string | null; md: string | null }>({
+    json: null,
+    md: null
+  })
 
-  const saved = useRef({ title: '', body: '' })
-  const latest = useRef({ title: '', body: '', noteId: id })
-  latest.current = { title, body, noteId }
-
-  // Serialize writes so a debounced save and a flush-on-close never race into
-  // two INSERTs for the same new note.
+  // Everything the (debounced) save reads lives in refs, so timers/flushes
+  // always see the latest values regardless of render timing.
+  const titleRef = useRef('')
+  const bodyRef = useRef<BodyValue>({ json: '', md: '' })
+  const savedRef = useRef({ title: '', md: '' })
+  const noteIdRef = useRef<number | null>(id)
   const chain = useRef<Promise<void>>(Promise.resolve())
   const timer = useRef<ReturnType<typeof setTimeout>>()
+  titleRef.current = title
 
   useEffect(() => {
     let active = true
     if (id === null) {
-      saved.current = { title: '', body: '' }
+      savedRef.current = { title: '', md: '' }
       setLoading(false)
       return
     }
     window.api.notes.get(id).then((note) => {
       if (!active || !note) return
       setTitle(note.title)
-      setBody(note.bodyMd ?? '')
-      saved.current = { title: note.title, body: note.bodyMd ?? '' }
+      titleRef.current = note.title
+      bodyRef.current = { json: note.bodyJson ?? '', md: note.bodyMd ?? '' }
+      savedRef.current = { title: note.title, md: note.bodyMd ?? '' }
+      setInitial({ json: note.bodyJson, md: note.bodyMd })
       setLoading(false)
     })
     return () => {
@@ -49,34 +55,43 @@ export default function NoteEditor({ id, onClose }: Props): JSX.Element {
 
   function persist(): Promise<void> {
     chain.current = chain.current.then(async () => {
-      const { title: t, body: b, noteId: nid } = latest.current
-      const trimmed = t.trim()
-      const isEmptyNew = nid === null && !trimmed && !b.trim()
-      const isClean = trimmed === saved.current.title && b === saved.current.body
+      const t = titleRef.current.trim()
+      const { json, md } = bodyRef.current
+      const nid = noteIdRef.current
+      const isEmptyNew = nid === null && !t && !md.trim()
+      const isClean = t === savedRef.current.title && md === savedRef.current.md
       if (isEmptyNew || isClean) {
         setStatus('saved')
         return
       }
-      const input = { title: trimmed, bodyMd: b }
+      const input = { title: t, bodyJson: json, bodyMd: md }
       if (nid === null) {
         const created = await window.api.notes.create(input)
-        setNoteId(created.id)
-        latest.current.noteId = created.id
+        noteIdRef.current = created.id
       } else {
         await window.api.notes.update(nid, input)
       }
-      saved.current = { title: trimmed, body: b }
+      savedRef.current = { title: t, md }
       setStatus('saved')
     })
     return chain.current
   }
 
-  function edit(next: { title?: string; body?: string }): void {
-    if (next.title !== undefined) setTitle(next.title)
-    if (next.body !== undefined) setBody(next.body)
+  function schedule(): void {
     setStatus('saving')
     if (timer.current) clearTimeout(timer.current)
     timer.current = setTimeout(() => void persist(), AUTOSAVE_DELAY)
+  }
+
+  function onTitleChange(value: string): void {
+    setTitle(value)
+    titleRef.current = value
+    schedule()
+  }
+
+  function onBodyChange(value: BodyValue): void {
+    bodyRef.current = value
+    schedule()
   }
 
   async function handleBack(): Promise<void> {
@@ -87,8 +102,7 @@ export default function NoteEditor({ id, onClose }: Props): JSX.Element {
 
   async function handleDelete(): Promise<void> {
     if (timer.current) clearTimeout(timer.current)
-    const nid = latest.current.noteId
-    if (nid !== null) await window.api.notes.remove(nid)
+    if (noteIdRef.current !== null) await window.api.notes.remove(noteIdRef.current)
     onClose()
   }
 
@@ -141,7 +155,7 @@ export default function NoteEditor({ id, onClose }: Props): JSX.Element {
       <div className="border-b border-border bg-panel-elev px-5 py-4">
         <input
           value={title}
-          onChange={(e) => edit({ title: e.target.value })}
+          onChange={(e) => onTitleChange(e.target.value)}
           placeholder="Nota sem título"
           className="w-full bg-transparent text-[17px] font-semibold leading-tight text-foreground placeholder:text-muted-foreground focus:outline-none"
         />
@@ -157,12 +171,11 @@ export default function NoteEditor({ id, onClose }: Props): JSX.Element {
         </div>
       </div>
 
-      {/* Body — plain editor for now; rich text (TipTap) + toolbar arrive in Phase 3. */}
-      <textarea
-        value={body}
-        onChange={(e) => edit({ body: e.target.value })}
-        placeholder="Escreva sua anotação…"
-        className="flex-1 resize-none bg-panel px-6 py-5 text-[14px] leading-relaxed text-foreground placeholder:text-muted-foreground focus:outline-none"
+      {/* Rich text body (TipTap) + floating formatting toolbar */}
+      <RichEditor
+        initialJson={initial.json}
+        initialMarkdown={initial.md}
+        onChange={onBodyChange}
       />
     </>
   )
