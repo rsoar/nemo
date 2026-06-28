@@ -108,3 +108,154 @@ code {
   border-radius: 4px;
   border: 1px solid var(--border);
 }
+
+/* --- Action bar (search / buttons) --- */
+.actionbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.actionbar__spacer {
+  flex: 1;
+}
+
+.search {
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.search:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.btn {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+}
+
+.btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn--danger:hover {
+  border-color: #c0392b;
+  color: #ff6b5e;
+}
+
+/* --- Note list --- */
+.empty {
+  color: var(--fg-dim);
+  font-size: 13px;
+  text-align: center;
+  margin-top: 32px;
+  line-height: 1.5;
+}
+
+.notelist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.noteitem {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  text-align: left;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  color: var(--fg);
+}
+
+.noteitem:hover {
+  border-color: var(--accent);
+}
+
+.noteitem__title {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.noteitem__preview {
+  font-size: 12px;
+  color: var(--fg-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.noteitem__when {
+  font-size: 11px;
+  color: var(--fg-dim);
+}
+
+/* --- Editor --- */
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.editor__title {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--fg);
+  font-size: 18px;
+  font-weight: 600;
+  padding: 4px 2px 8px;
+}
+
+.editor__title:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.editor__body {
+  flex: 1;
+  resize: none;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 10px 12px;
+  min-height: 200px;
+}
+
+.editor__body:focus {
+  outline: none;
+  border-color: var(--accent);
+}

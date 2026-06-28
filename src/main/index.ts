@@ -2,12 +2,14 @@ import { app, BrowserWindow, Tray } from 'electron'
 import { WindowManager } from './windows/manager'
 import { createTray } from './windows/tray'
 import { registerIpcHandlers } from './ipc'
+import { getDb, closeDb } from './db/connection'
 
 // Keep references alive for the whole app lifetime.
 let windows: WindowManager
 let tray: Tray
 
 function bootstrap(): void {
+  getDb() // open + initialize the database before anything else
   windows = new WindowManager()
   registerIpcHandlers(windows)
   tray = createTray(windows)
@@ -27,3 +29,5 @@ app.whenReady().then(bootstrap)
 app.on('window-all-closed', () => {
   // no-op: closing windows hides them; quitting happens via the tray.
 })
+
+app.on('before-quit', () => closeDb())

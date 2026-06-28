@@ -26,6 +26,23 @@ export interface Note {
   updatedAt: string
 }
 
+/** Fields accepted when creating or updating a note. */
+export interface NoteInput {
+  title: string
+  bodyJson?: string | null
+  bodyMd?: string | null
+  categoryId?: number | null
+}
+
+/** Note CRUD surface exposed to the renderer. */
+export interface NotesApi {
+  list: () => Promise<Note[]>
+  get: (id: number) => Promise<Note | null>
+  create: (input: NoteInput) => Promise<Note>
+  update: (id: number, input: NoteInput) => Promise<Note>
+  remove: (id: number) => Promise<void>
+}
+
 /** Frameless window controls driven from the renderer titlebar / bubble. */
 export interface WindowControls {
   /** Hide the panel and reveal the floating bubble. */
@@ -38,7 +55,6 @@ export interface WindowControls {
 
 /** The typed surface exposed to the renderer via contextBridge as `window.api`. */
 export interface MemoApi {
-  /** Phase 0 smoke-test channel; replaced by real note CRUD in Phase 2. */
-  ping: () => Promise<string>
+  notes: NotesApi
   window: WindowControls
 }

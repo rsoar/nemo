@@ -1,13 +1,23 @@
 import { ipcMain } from 'electron'
 import type { WindowManager } from '../windows/manager'
+import { noteRepository } from '../db/noteRepository'
+import type { NoteInput } from '../../shared/types'
 
 /**
- * Registers all IPC handlers. Phase 1 wires the frameless window controls;
- * Phase 2 will add note/tag/category CRUD backed by the SQLite repositories.
+ * Registers all IPC handlers: note CRUD (Phase 2) and the frameless window
+ * controls (Phase 1).
  */
 export function registerIpcHandlers(windows: WindowManager): void {
-  ipcMain.handle('ping', () => 'pong')
+  // Notes CRUD
+  ipcMain.handle('notes:list', () => noteRepository.list())
+  ipcMain.handle('notes:get', (_e, id: number) => noteRepository.get(id))
+  ipcMain.handle('notes:create', (_e, input: NoteInput) => noteRepository.create(input))
+  ipcMain.handle('notes:update', (_e, id: number, input: NoteInput) =>
+    noteRepository.update(id, input)
+  )
+  ipcMain.handle('notes:remove', (_e, id: number) => noteRepository.remove(id))
 
+  // Window controls
   ipcMain.on('window:minimize', () => windows.minimizeToBubble())
   ipcMain.on('window:close', () => windows.hideToTray())
   ipcMain.on('window:show', () => windows.showPanel())
