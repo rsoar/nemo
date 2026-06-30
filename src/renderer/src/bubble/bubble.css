@@ -11,3 +11,69 @@ body,
   align-items: center;
   justify-content: center;
 }
+
+/* --- Swimming fish --- */
+
+/* Swims across the circle and back, flipping to face the direction of travel. */
+.fish-swim {
+  animation: nemo-swim 6s ease-in-out infinite;
+}
+
+/* Gentle vertical bob, slightly out of sync with the swim for a lively feel. */
+.fish {
+  animation: nemo-bob 2.3s ease-in-out infinite;
+}
+
+/* Tail wag, pivoting where it meets the body. */
+.fish__tail {
+  transform-box: fill-box;
+  transform-origin: right center;
+  animation: nemo-wag 0.55s ease-in-out infinite;
+}
+
+@keyframes nemo-swim {
+  0% {
+    transform: translateX(-9px) scaleX(1);
+  }
+  44% {
+    transform: translateX(9px) scaleX(1);
+  }
+  50% {
+    transform: translateX(9px) scaleX(-1);
+  }
+  94% {
+    transform: translateX(-9px) scaleX(-1);
+  }
+  100% {
+    transform: translateX(-9px) scaleX(1);
+  }
+}
+
+@keyframes nemo-bob {
+  0%,
+  100% {
+    transform: translateY(1px);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes nemo-wag {
+  0%,
+  100% {
+    transform: rotate(-11deg);
+  }
+  50% {
+    transform: rotate(9deg);
+  }
+}
+
+/* Respect reduced-motion preferences: keep the fish, drop the swimming. */
+@media (prefers-reduced-motion: reduce) {
+  .fish-swim,
+  .fish,
+  .fish__tail {
+    animation: none;
+  }
+}
