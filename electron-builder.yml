@@ -16,5 +16,6 @@ linux:
     - deb
   category: Utility
   icon: build/icon.png
+  executableName: memo
   maintainer: rsoar_dev <rsoar_dev@outlook.com>
   artifactName: ${productName}-${version}.${ext}

@@ -4,6 +4,11 @@ import { createTray } from './windows/tray'
 import { registerIpcHandlers } from './ipc'
 import { getDb, closeDb } from './db/connection'
 
+// The npm/Debian package is "memo-notes" (to avoid colliding with the distro's
+// `memo` package), but the runtime identity stays "memo" so userData remains
+// ~/.config/memo (don't orphan the existing database).
+app.setName('memo')
+
 // Keep references alive for the whole app lifetime.
 let windows: WindowManager
 let tray: Tray

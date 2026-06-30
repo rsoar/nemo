@@ -1,6 +1,7 @@
 {
-  "name": "memo",
-  "version": "0.1.0",
+  "name": "memo-notes",
+  "productName": "memo",
+  "version": "0.1.1",
   "description": "Desktop note-taking app with tags, categories, markdown and a floating-bubble UI",
   "main": "./out/main/index.js",
   "author": "rsoar_dev",
