@@ -10,7 +10,7 @@ export default function Bubble(): JSX.Element {
   return (
     <button
       onClick={() => window.api.window.showPanel()}
-      aria-label="Abrir memo"
+      aria-label="Abrir nemo"
       className="group relative grid size-14 place-items-center rounded-full bg-accent text-accent-foreground shadow-bubble transition-transform hover:scale-105 active:scale-95"
     >
       <svg viewBox="0 0 100 100" className="size-7" fill="#ffffff" aria-hidden>

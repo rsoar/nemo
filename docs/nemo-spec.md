@@ -1,4 +1,4 @@
-# memo — Especificação do produto (referência para layout)
+# nemo — Especificação do produto (referência para layout)
 
 > Documento de referência para elaboração do **layout / UI**. Descreve o
 > propósito, as superfícies visuais, telas, componentes, estados e restrições.
@@ -8,7 +8,7 @@
 
 ## 1. Visão geral
 
-**memo** é um aplicativo de desktop para anotações do dia a dia — um "notepad
+**nemo** é um aplicativo de desktop para anotações do dia a dia — um "notepad
 turbinado". A diferença para um bloco de notas comum: cada anotação tem
 **título**, pode receber **tags** e **uma categoria**, e o corpo aceita
 **formatação rica (markdown / WYSIWYG)**.
@@ -54,7 +54,7 @@ bolha) fica visível por vez.
 - Largura **redimensionável** pelo usuário (mínimo ~320px, padrão ~420px).
 - **Arrastável** (inclusive entre monitores); snap às bordas é refinamento
   futuro.
-- *Frameless*: tem uma **barra de título própria** no topo com a marca "memo" e
+- *Frameless*: tem uma **barra de título própria** no topo com a marca "nemo" e
   os botões de janela.
 - É onde acontece TODA a experiência de anotações (lista, editor, busca,
   filtros).
@@ -88,7 +88,7 @@ bolha) fica visível por vez.
 Da cima para baixo, o painel se organiza em regiões:
 
 ### 4.1 Barra de título (sempre visível)
-- Marca "memo".
+- Marca "nemo".
 - Botões de janela à direita: **minimizar** (vira bolha) e **fechar** (vai pra
   bandeja).
 - É a **área de arraste** da janela (exceto onde há botões).

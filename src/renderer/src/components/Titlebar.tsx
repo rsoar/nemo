@@ -24,7 +24,7 @@ export default function Titlebar({ showBack, onBack }: Props): JSX.Element {
           <div className="flex items-center gap-2">
             <div className="size-2 rounded-full bg-accent shadow-[0_0_10px_var(--accent)]" />
             <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-              memo
+              nemo
             </span>
           </div>
         )}

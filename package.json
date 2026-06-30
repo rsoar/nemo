@@ -1,12 +1,12 @@
 {
-  "name": "memo-notes",
-  "productName": "memo",
+  "name": "nemo-notes",
+  "productName": "nemo",
   "version": "0.1.1",
   "description": "Desktop note-taking app with tags, categories, markdown and a floating-bubble UI",
   "main": "./out/main/index.js",
   "author": "rsoar_dev",
   "license": "MIT",
-  "homepage": "https://github.com/me-rsoar/memo",
+  "homepage": "https://github.com/me-rsoar/nemo",
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",

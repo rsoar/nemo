@@ -1,9 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import type { MemoApi, NoteInput } from '../shared/types'
+import type { NemoApi, NoteInput } from '../shared/types'
 
 // The single, typed bridge between renderer and main. The renderer can only
-// reach the main process through the channels declared in `MemoApi`.
-const api: MemoApi = {
+// reach the main process through the channels declared in `NemoApi`.
+const api: NemoApi = {
   notes: {
     list: () => ipcRenderer.invoke('notes:list'),
     get: (id) => ipcRenderer.invoke('notes:get', id),

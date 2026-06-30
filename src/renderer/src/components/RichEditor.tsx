@@ -52,7 +52,7 @@ export default function RichEditor({
     ],
     content: resolveInitialContent(initialJson, initialMarkdown),
     editorProps: {
-      attributes: { class: 'prose-memo focus:outline-none' }
+      attributes: { class: 'prose-nemo focus:outline-none' }
     },
     onUpdate: ({ editor }) => {
       onChangeRef.current({

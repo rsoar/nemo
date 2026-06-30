@@ -3,7 +3,7 @@ import { createPanelWindow } from './panel'
 import { createBubbleWindow } from './bubble'
 
 /**
- * Coordinates the two windows that make up memo's shell: the side **panel** and
+ * Coordinates the two windows that make up nemo's shell: the side **panel** and
  * the floating **bubble**. Exactly one is visible at a time; "closing" hides
  * both to the tray without quitting the app.
  */

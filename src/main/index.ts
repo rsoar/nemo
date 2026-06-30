@@ -4,10 +4,10 @@ import { createTray } from './windows/tray'
 import { registerIpcHandlers } from './ipc'
 import { getDb, closeDb } from './db/connection'
 
-// The npm/Debian package is "memo-notes" (to avoid colliding with the distro's
-// `memo` package), but the runtime identity stays "memo" so userData remains
-// ~/.config/memo (don't orphan the existing database).
-app.setName('memo')
+// The npm/Debian package is "nemo-notes" (to avoid colliding with the Cinnamon
+// `nemo` file manager package); the runtime identity is "nemo" so userData is
+// ~/.config/nemo. Legacy ~/.config/memo data is migrated on first run.
+app.setName('nemo')
 
 // Keep references alive for the whole app lifetime.
 let windows: WindowManager
@@ -29,7 +29,7 @@ function bootstrap(): void {
 
 app.whenReady().then(bootstrap)
 
-// Don't quit when windows are hidden — memo lives in the tray. Quit is explicit
+// Don't quit when windows are hidden — nemo lives in the tray. Quit is explicit
 // (tray "Sair"). On macOS the app also traditionally stays alive.
 app.on('window-all-closed', () => {
   // no-op: closing windows hides them; quitting happens via the tray.

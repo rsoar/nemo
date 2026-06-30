@@ -12,7 +12,7 @@ export function createTray(windows: WindowManager): Tray {
   const icon = nativeImage.createFromPath(iconPath)
   const tray = new Tray(icon.isEmpty() ? nativeImage.createEmpty() : icon)
 
-  tray.setToolTip('memo')
+  tray.setToolTip('nemo')
   tray.setContextMenu(
     Menu.buildFromTemplate([
       { label: 'Abrir', click: () => windows.showPanel() },

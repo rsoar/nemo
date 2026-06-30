@@ -1,9 +1,25 @@
 import { join } from 'path'
+import { existsSync, copyFileSync, mkdirSync } from 'fs'
 import { app } from 'electron'
 import Database from 'better-sqlite3'
 import { SCHEMA } from './schema'
 
 let db: Database.Database | null = null
+
+/**
+ * One-time migration from the former "memo" identity: if the new nemo database
+ * doesn't exist yet but a legacy ~/.config/memo/memo.db does, copy it over
+ * (including its WAL/SHM sidecars) so existing notes carry over.
+ */
+function migrateLegacyDatabase(targetFile: string): void {
+  if (existsSync(targetFile)) return
+  const legacy = join(app.getPath('appData'), 'memo', 'memo.db')
+  if (!existsSync(legacy)) return
+  mkdirSync(join(targetFile, '..'), { recursive: true })
+  for (const suffix of ['', '-wal', '-shm']) {
+    if (existsSync(legacy + suffix)) copyFileSync(legacy + suffix, targetFile + suffix)
+  }
+}
 
 /** Default categories seeded on first run (oklch colors match the theme tokens). */
 const PRESET_CATEGORIES: Array<{ name: string; color: string }> = [
@@ -29,7 +45,8 @@ function seedCategories(database: Database.Database): void {
  */
 export function getDb(): Database.Database {
   if (!db) {
-    const file = join(app.getPath('userData'), 'memo.db')
+    const file = join(app.getPath('userData'), 'nemo.db')
+    migrateLegacyDatabase(file)
     db = new Database(file)
     db.pragma('journal_mode = WAL')
     db.pragma('foreign_keys = ON')

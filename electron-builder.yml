@@ -1,5 +1,5 @@
-appId: com.rsoar.memo
-productName: memo
+appId: com.rsoar.nemo
+productName: nemo
 directories:
   output: release
   buildResources: build
@@ -16,6 +16,6 @@ linux:
     - deb
   category: Utility
   icon: build/icon.png
-  executableName: memo
+  executableName: nemo
   maintainer: rsoar_dev <rsoar_dev@outlook.com>
   artifactName: ${productName}-${version}.${ext}

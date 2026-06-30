@@ -1,6 +1,6 @@
 // Domain + IPC contract shared by main, preload and renderer.
 // This file is the seam that future remote-SQL migration plugs into:
-// the renderer only ever depends on the `MemoApi` interface, never on the DB.
+// the renderer only ever depends on the `NemoApi` interface, never on the DB.
 
 export interface Category {
   id: number
@@ -63,7 +63,7 @@ export interface WindowControls {
 }
 
 /** The typed surface exposed to the renderer via contextBridge as `window.api`. */
-export interface MemoApi {
+export interface NemoApi {
   notes: NotesApi
   categories: CategoriesApi
   window: WindowControls

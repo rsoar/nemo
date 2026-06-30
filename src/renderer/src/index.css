@@ -81,83 +81,83 @@
 .ProseMirror {
   min-height: 12rem;
 }
-.prose-memo {
+.prose-nemo {
   font-size: 14px;
   line-height: 1.65;
   color: var(--foreground);
 }
-.prose-memo:focus {
+.prose-nemo:focus {
   outline: none;
 }
-.prose-memo p {
+.prose-nemo p {
   margin: 0 0 0.75rem;
 }
-.prose-memo h1 {
+.prose-nemo h1 {
   font-size: 1.25rem;
   font-weight: 600;
   margin: 1rem 0 0.5rem;
 }
-.prose-memo h2 {
+.prose-nemo h2 {
   font-size: 1.05rem;
   font-weight: 600;
   margin: 1rem 0 0.5rem;
 }
-.prose-memo h3 {
+.prose-nemo h3 {
   font-size: 0.95rem;
   font-weight: 600;
   margin: 0.75rem 0 0.4rem;
 }
-.prose-memo ul {
+.prose-nemo ul {
   list-style: disc;
   padding-left: 1.25rem;
   margin: 0 0 0.75rem;
 }
-.prose-memo ol {
+.prose-nemo ol {
   list-style: decimal;
   padding-left: 1.25rem;
   margin: 0 0 0.75rem;
 }
-.prose-memo li {
+.prose-nemo li {
   margin: 0.15rem 0;
 }
-.prose-memo li > p {
+.prose-nemo li > p {
   margin: 0;
 }
-.prose-memo blockquote {
+.prose-nemo blockquote {
   border-left: 2px solid var(--accent-soft);
   padding-left: 0.9rem;
   color: var(--muted-foreground);
   font-style: italic;
   margin: 0 0 0.75rem;
 }
-.prose-memo code {
+.prose-nemo code {
   background: var(--subtle);
   padding: 0.1rem 0.35rem;
   border-radius: 4px;
   font-size: 0.85em;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
-.prose-memo pre {
+.prose-nemo pre {
   background: var(--input);
   padding: 0.75rem 0.9rem;
   border-radius: 8px;
   overflow-x: auto;
   margin: 0 0 0.75rem;
 }
-.prose-memo pre code {
+.prose-nemo pre code {
   background: transparent;
   padding: 0;
   font-size: 0.85em;
 }
-.prose-memo a {
+.prose-nemo a {
   color: var(--accent);
   text-decoration: underline;
 }
-.prose-memo strong {
+.prose-nemo strong {
   font-weight: 600;
 }
 /* Placeholder (extension-placeholder) */
-.prose-memo p.is-editor-empty:first-child::before {
+.prose-nemo p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
   color: var(--muted-foreground);
   float: left;
