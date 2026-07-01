@@ -27,19 +27,19 @@ body,
 /* fish.svg faces LEFT natively, so scaleX(1) = facing left. */
 @keyframes nemo-swim {
   0% {
-    transform: translateX(12px) scaleX(1);
+    transform: translateX(16px) scaleX(1);
   }
   44% {
-    transform: translateX(-12px) scaleX(1);
+    transform: translateX(-16px) scaleX(1);
   }
   50% {
-    transform: translateX(-12px) scaleX(-1);
+    transform: translateX(-16px) scaleX(-1);
   }
   94% {
-    transform: translateX(12px) scaleX(-1);
+    transform: translateX(16px) scaleX(-1);
   }
   100% {
-    transform: translateX(12px) scaleX(1);
+    transform: translateX(16px) scaleX(1);
   }
 }
 
