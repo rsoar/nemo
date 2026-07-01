@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import bubbleUrl from './bubble.svg'
 import fishUrl from './fish.svg'
-import glassUrl from './glass.svg'
 
 export default function Bubble(): JSX.Element {
   const [count, setCount] = useState(0)
@@ -29,13 +28,6 @@ export default function Bubble(): JSX.Element {
           <img src={fishUrl} alt="" className="fish size-16 object-contain" />
         </span>
       </span>
-
-      {/* Layer 3: glass reflections on top, so the fish reads as submerged. */}
-      <img
-        src={glassUrl}
-        alt=""
-        className="pointer-events-none absolute inset-0 size-full object-contain"
-      />
 
       {count > 0 && (
         <span className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-panel text-[10px] font-bold text-accent ring-2 ring-background">
