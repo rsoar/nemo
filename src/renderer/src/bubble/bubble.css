@@ -24,28 +24,22 @@ body,
   animation: nemo-bob 2.3s ease-in-out infinite;
 }
 
-/* Tail wag, pivoting where it meets the body. */
-.fish__tail {
-  transform-box: fill-box;
-  transform-origin: right center;
-  animation: nemo-wag 0.55s ease-in-out infinite;
-}
-
+/* fish.svg faces LEFT natively, so scaleX(1) = facing left. */
 @keyframes nemo-swim {
   0% {
-    transform: translateX(-9px) scaleX(1);
+    transform: translateX(8px) scaleX(1);
   }
   44% {
-    transform: translateX(9px) scaleX(1);
+    transform: translateX(-8px) scaleX(1);
   }
   50% {
-    transform: translateX(9px) scaleX(-1);
+    transform: translateX(-8px) scaleX(-1);
   }
   94% {
-    transform: translateX(-9px) scaleX(-1);
+    transform: translateX(8px) scaleX(-1);
   }
   100% {
-    transform: translateX(-9px) scaleX(1);
+    transform: translateX(8px) scaleX(1);
   }
 }
 
@@ -59,21 +53,10 @@ body,
   }
 }
 
-@keyframes nemo-wag {
-  0%,
-  100% {
-    transform: rotate(-11deg);
-  }
-  50% {
-    transform: rotate(9deg);
-  }
-}
-
 /* Respect reduced-motion preferences: keep the fish, drop the swimming. */
 @media (prefers-reduced-motion: reduce) {
   .fish-swim,
-  .fish,
-  .fish__tail {
+  .fish {
     animation: none;
   }
 }
