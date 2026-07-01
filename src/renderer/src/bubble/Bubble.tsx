@@ -13,7 +13,7 @@ export default function Bubble(): JSX.Element {
     <button
       onClick={() => window.api.window.showPanel()}
       aria-label="Abrir nemo"
-      className="group relative grid size-14 place-items-center transition-transform hover:scale-105 active:scale-95"
+      className="group relative grid size-20 place-items-center transition-transform hover:scale-105 active:scale-95"
     >
       {/* Layer 1: the realistic water sphere (static). */}
       <img
@@ -25,7 +25,7 @@ export default function Bubble(): JSX.Element {
       {/* Layer 2: the fish, swimming, clipped to the sphere's circle. */}
       <span className="absolute inset-[6%] overflow-hidden rounded-full">
         <span className="fish-swim absolute inset-0 grid place-items-center">
-          <img src={fishUrl} alt="" className="fish size-8 object-contain" />
+          <img src={fishUrl} alt="" className="fish size-12 object-contain" />
         </span>
       </span>
 

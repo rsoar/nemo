@@ -1,8 +1,8 @@
 import { join } from 'path'
 import { BrowserWindow, screen } from 'electron'
 
-// Window is larger than the 56px circle to leave room for the count badge.
-const BUBBLE_SIZE = 88
+// Window is larger than the ~80px circle to leave room for shadow + count badge.
+const BUBBLE_SIZE = 116
 const MARGIN = 16
 
 function loadBubble(win: BrowserWindow): void {
